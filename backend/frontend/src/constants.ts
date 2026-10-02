@@ -23,6 +23,7 @@ export const menuItemTexts: Record<string, string> = {
   DISABLE_STAFF_STATUS: 'Disable Staff',
   ENABLE_STUDENT_STATUS: 'Enable Student',
   DISABLE_STUDENT_STATUS: 'Disable Student',
+  DELETE_STUDENT: 'Delete Student',
   RESEND_VERIFICATION_EMAIL_TO_USER: 'Resend Verification Email',
   RESEND_PWD_LINK_EMAIL_TO_USER: 'Resend Password Setup Link',
   RESET_USER_PWD: 'Reset User Password',

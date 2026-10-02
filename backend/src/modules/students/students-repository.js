@@ -1,5 +1,7 @@
 const { processDBRequest } = require("../../utils");
 
+const STUDENT_ROLE_ID = 3;
+
 const getRoleId = async (roleName) => {
     const query = "SELECT id FROM roles WHERE name ILIKE $1";
     const queryParams = [roleName];
@@ -62,7 +64,7 @@ const findStudentDetail = async (id) => {
             p.dob,
             p.class_name AS "class",
             p.section_name AS "section",
-            p.roll,
+            p.roll::text AS roll,
             p.father_name AS "fatherName",
             p.father_phone AS "fatherPhone",
             p.mother_name AS "motherName",
@@ -98,24 +100,30 @@ const findStudentToSetStatus = async ({ userId, reviewerId, status }) => {
     return rowCount
 }
 
-const findStudentToUpdate = async (paylaod) => {
-    const { basicDetails: { name, email }, id } = paylaod;
-    const currentDate = new Date();
+const findStudentById = async (id) => {
+    const query = "SELECT id FROM users WHERE id = $1 AND role_id = $2";
+    const { rows } = await processDBRequest({ query, queryParams: [id, STUDENT_ROLE_ID] });
+    return rows[0];
+}
+
+// one statement = atomic; every step is scoped to the student row `s`, so a non-student id deletes nothing
+const removeStudent = async (id) => {
     const query = `
-        UPDATE users
-        SET name = $1, email = $2, updated_dt = $3
-        WHERE id = $4;
-    `;
-    const queryParams = [name, email, currentDate, id];
-    const { rows } = await processDBRequest({ query, queryParams });
-    return rows;
+        WITH s AS (SELECT id FROM users WHERE id = $1 AND role_id = $2),
+             l AS (DELETE FROM user_leaves WHERE user_id IN (SELECT id FROM s)),
+             p AS (DELETE FROM user_leave_policy WHERE user_id IN (SELECT id FROM s)),
+             t AS (DELETE FROM user_profiles WHERE user_id IN (SELECT id FROM s))
+        DELETE FROM users WHERE id IN (SELECT id FROM s)`;
+    const { rowCount } = await processDBRequest({ query, queryParams: [id, STUDENT_ROLE_ID] });
+    return rowCount;
 }
 
 module.exports = {
+    removeStudent,
+    findStudentById,
     getRoleId,
     findAllStudents,
     addOrUpdateStudent,
     findStudentDetail,
-    findStudentToSetStatus,
-    findStudentToUpdate
+    findStudentToSetStatus
 };

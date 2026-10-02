@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { authenticateToken, handle404Error, csrfProtection, checkApiAccess } = require("../middlewares");
-const { studentsRoutes } = require("../modules/students/sudents-router.js");
+const { studentsRoutes } = require("../modules/students/students-router.js");
 const { authRoutes } = require("../modules/auth/auth-router.js");
 const { rpRoutes } = require("../modules/roles-and-permissions/rp-router.js");
 const { leaveRoutes } = require("../modules/leave/leave-router.js");

@@ -1,11 +1,12 @@
 export const getQueryString = (queryParamsObj: object | null) => {
   if (!queryParamsObj) return '';
 
-  const queryParams: string[] = [];
+  const params = new URLSearchParams();
   for (const [key, value] of Object.entries(queryParamsObj)) {
     if (value) {
-      queryParams.push(`${key}=${value}`);
+      params.append(key, String(value));
     }
   }
-  return queryParams.length > 0 ? `?${queryParams.join(',')}` : '';
+  const queryString = params.toString();
+  return queryString ? `?${queryString}` : '';
 };

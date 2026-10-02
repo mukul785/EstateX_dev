@@ -12,7 +12,8 @@
     "start": "node ./src/server.js",
     "build:client": "npm run build --prefix frontend",
     "postinstall": "node scripts/setup-env.js && npm install --prefix frontend",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test \"test/**/*.test.js\"",
+    "test:db": "dropdb --if-exists school_mgmt_test && createdb school_mgmt_test && psql -q -d school_mgmt_test -f ../seed_db/tables.sql && psql -q -d school_mgmt_test -f ../seed_db/seed-db.sql"
   },
   "author": "",
   "license": "ISC",

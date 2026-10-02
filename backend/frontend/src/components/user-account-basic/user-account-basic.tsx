@@ -1,6 +1,15 @@
 import * as React from 'react';
 import { Box, ListItemIcon, ListItemText, MenuItem, Paper, Typography } from '@mui/material';
-import { Block, CheckCircle, Edit, Email, Key, LockReset, Visibility } from '@mui/icons-material';
+import {
+  Block,
+  CheckCircle,
+  Delete,
+  Edit,
+  Email,
+  Key,
+  LockReset,
+  Visibility
+} from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
@@ -95,6 +104,9 @@ export const UserAccountBasic = ({ data }: { data: UserAccountBasicDataProps }) 
       icon: <CheckCircle />,
       text: 'Enable'
     },
+    ...(userType === 'student'
+      ? [{ action: 'DELETE_STUDENT', icon: <Delete />, text: 'Delete' }]
+      : []),
     {
       action: 'RESEND_VERIFICATION_EMAIL_TO_USER',
       icon: <Email />,
